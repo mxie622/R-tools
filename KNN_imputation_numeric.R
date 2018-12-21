@@ -9,7 +9,7 @@ KNN_imputation_numeric = function(df, outcome, k){
   # Outcome : 'variable' of 'df' to be filled; numeric variable 
   # k : The number of nearest neighbour; a number or a sequence of possible k
   
-  # outcome <- 'Sepal.Length' # To fill
+  # outcome <- 'Sepal.Length' # To fill for example
   variables <- names(df[!names(df) %in% c(outcome)]) # predictors
   f <- as.formula(
     paste(outcome, 
