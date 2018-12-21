@@ -1,4 +1,4 @@
-##### Imputation by KNN
+##### Imputation by KNN: Work where exists single NA in a row **** 
 
 # Start!!!!!!
 
