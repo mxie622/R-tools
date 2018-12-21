@@ -54,7 +54,7 @@ df[31:35, 4] = NA
 nrow(df[complete.cases(df), ]) # completed samples are 80 ****
 
 
-# 1 variable filling 
+# 1 variable filling ************
 new_df <- KNN_imputation_numeric(df = df, outcome = 'Sepal.Length', k = c(1, 3, 7, 9))
 nrow(new_df[complete.cases(new_df), ]) # completed samples are 85 ****
 
