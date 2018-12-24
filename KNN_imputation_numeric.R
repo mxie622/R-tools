@@ -1,4 +1,4 @@
-names(df[!names(df) %in% c(outcome)])
+
 ##### Imputation by KNN: Work where exists single NA in a row **** 
 
 # Start!!!!!!
