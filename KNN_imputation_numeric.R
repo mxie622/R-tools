@@ -4,13 +4,15 @@
 
 #------------------------
 
-KNN_imputation_numeric = function(df, outcome, k){
+KNN_imputation_numeric = function(df, outcome, variables, k){
   # df : Raw dataset; data.frame
-  # Outcome : 'variable' of 'df' to be filled; numeric variable 
+  # outcome : 'variable' of 'df' to be filled; numeric variable 
+  # variables: predictors
   # k : The number of nearest neighbour; a number or a sequence of possible k
   
   # outcome <- 'Sepal.Length' # To fill for example
-  variables <- names(df[!names(df) %in% c(outcome)]) # predictors
+  df$index_mikexie = 1 : nrow(df)
+  variables <- variables # predictors
   f <- as.formula(
     paste(outcome, 
           paste(variables, collapse = " + "), 
@@ -28,11 +30,14 @@ KNN_imputation_numeric = function(df, outcome, k){
   best_k = selecting_k$results$k[which(selecting_k$results$RMSE == min(selecting_k$results$RMSE))] # Select the best k with minimum RMSE
   model_to_fill_NA <- knnreg(formula = f, data = No_NA_df, k = best_k)
   
-  temp0 <- NA_df[rowSums(is.na(NA_df[!names(NA_df) %in% c(outcome)])) == 0, ]
+  temp0 <- NA_df[rowSums(is.na(NA_df[!names(NA_df) %in% c(outcome)])) == 0, ][variables]
 
   NA_df[rowSums(is.na(NA_df[!names(NA_df) %in% c(outcome)])) == 0, ][, outcome] = predict(model_to_fill_NA, temp0)
   
-  rbind(NA_df, No_NA_df)
+  new_df = rbind(NA_df, No_NA_df)
+  new_df = new_df[order(new_df$index_mikexie), ]
+  new_df$index_mikexie = NULL
+  new_df
 }
 
 
@@ -55,7 +60,10 @@ nrow(df[complete.cases(df), ]) # completed samples are 80 ****
 
 
 # 1 variable filling ************
-new_df <- KNN_imputation_numeric(df = df, outcome = 'Sepal.Length', k = c(1, 3, 7, 9))
+new_df <- KNN_imputation_numeric(df = df, 
+                                 outcome = 'Sepal.Length', 
+                                 variables = colnames(df[, 1:4]), 
+                                 k = c(1, 3, 7, 9))
 nrow(new_df[complete.cases(new_df), ]) # completed samples are 85 ****
 
 # Multiple filling *************
@@ -68,7 +76,10 @@ variables
 j = 2
 
 for (i in 1 : (length(variables) - 1)){ # Species is not a numeric variable.
-  multiple_df[[j]] <- KNN_imputation_numeric(df = multiple_df[[j-1]], outcome = variables[i], k = c(1,3,7,9))
+  multiple_df[[j]] <- KNN_imputation_numeric(df = multiple_df[[j - 1]], 
+                                             outcome = variables[i],  
+                                             variables = colnames(df[, 1:4]),
+                                             k = c(1, 3, 7, 9))
   j = j + 1
   i = i + 1
 }
