@@ -1,3 +1,4 @@
+
 ##### Imputation by KNN: Work where exists single NA in a row **** 
 
 # Start!!!!!!
@@ -12,7 +13,7 @@ KNN_imputation_numeric = function(df, outcome, variables, k){
   
   # outcome <- 'Sepal.Length' # To fill for example
   df$index_mikexie = 1 : nrow(df)
-  variables <- variables # predictors
+
   f <- as.formula(
     paste(outcome, 
           paste(variables, collapse = " + "), 
@@ -23,15 +24,15 @@ KNN_imputation_numeric = function(df, outcome, variables, k){
   No_NA_df <- df[complete.cases(df), ] # Complete set with no NA
   NA_df <- df[!complete.cases(df), ] # Take a subset
   selecting_k <- train(form = f,
-        method = "knn",
-        data = No_NA_df,
-        tuneGrid = expand.grid(k = k)) # Select the best k
+                       method = "knn",
+                       data = No_NA_df,
+                       tuneGrid = expand.grid(k = k)) # Select the best k
   
   best_k = selecting_k$results$k[which(selecting_k$results$RMSE == min(selecting_k$results$RMSE))] # Select the best k with minimum RMSE
   model_to_fill_NA <- knnreg(formula = f, data = No_NA_df, k = best_k)
   
   temp0 <- NA_df[rowSums(is.na(NA_df[!names(NA_df) %in% c(outcome)])) == 0, ][variables]
-
+  
   NA_df[rowSums(is.na(NA_df[!names(NA_df) %in% c(outcome)])) == 0, ][, outcome] = predict(model_to_fill_NA, temp0)
   
   new_df = rbind(NA_df, No_NA_df)
@@ -62,7 +63,7 @@ nrow(df[complete.cases(df), ]) # completed samples are 80 ****
 # 1 variable filling ************
 new_df <- KNN_imputation_numeric(df = df, 
                                  outcome = 'Sepal.Length', 
-                                 variables = colnames(df[, 1:4]), 
+                                 variables = colnames(df[, 2:5]), 
                                  k = c(1, 3, 7, 9))
 nrow(new_df[complete.cases(new_df), ]) # completed samples are 85 ****
 
@@ -78,7 +79,7 @@ j = 2
 for (i in 1 : (length(variables) - 1)){ # Species is not a numeric variable.
   multiple_df[[j]] <- KNN_imputation_numeric(df = multiple_df[[j - 1]], 
                                              outcome = variables[i],  
-                                             variables = colnames(df[, 1:4]),
+                                             variables = colnames(df[, 2:5]),
                                              k = c(1, 3, 7, 9))
   j = j + 1
   i = i + 1
