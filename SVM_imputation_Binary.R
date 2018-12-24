@@ -18,7 +18,7 @@ SVM_imputation_binary <- function(data, variables, outcome, method, kernel, C){
   # method : Option: 'svmRadial',  'svmLinear', 'svmPoly'
   # kernel : Option: 'radial',  'linear', 'polynomial'
   # C : Possible values; For example c(0.05,0.0456,0.0577) # 
-  
+  data$index_mikexie = 1 : nrow(data)
   if (missing(C)){
     C = seq(1.6, 2.2, by = 0.2)
   }
@@ -75,7 +75,10 @@ SVM_imputation_binary <- function(data, variables, outcome, method, kernel, C){
   
   NA_df[rowSums(is.na(NA_df[!names(NA_df) %in% c(outcome)])) == 0, ][, outcome] = predict(model_to_fill_NA, temp0)
   
-  rbind(NA_df, No_NA_df)
+  new_df = rbind(NA_df, No_NA_df)
+  new_df = new_df[order(new_df$index_mikexie), ]
+  new_df$index_mikexie = NULL
+  new_df
   
 }
 
