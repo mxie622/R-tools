@@ -1,4 +1,4 @@
-
+names(df[!names(df) %in% c(outcome)])
 ##### Imputation by KNN: Work where exists single NA in a row **** 
 
 # Start!!!!!!
@@ -8,10 +8,13 @@
 KNN_imputation_numeric = function(df, outcome, variables, k){
   # df : Raw dataset; data.frame
   # outcome : 'variable' of 'df' to be filled; numeric variable 
-  # variables: predictors
+  # variables: predictors # Be careful when filling multiple NA from different columns
   # k : The number of nearest neighbour; a number or a sequence of possible k
   
   # outcome <- 'Sepal.Length' # To fill for example
+  if (missing(variables)){
+    variables = names(df[!names(df) %in% c(outcome)])
+  }
   df$index_mikexie = 1 : nrow(df)
 
   f <- as.formula(
@@ -63,7 +66,6 @@ nrow(df[complete.cases(df), ]) # completed samples are 80 ****
 # 1 variable filling ************
 new_df <- KNN_imputation_numeric(df = df, 
                                  outcome = 'Sepal.Length', 
-                                 variables = colnames(df[, 2:5]), 
                                  k = c(1, 3, 7, 9))
 nrow(new_df[complete.cases(new_df), ]) # completed samples are 85 ****
 
@@ -79,7 +81,7 @@ j = 2
 for (i in 1 : (length(variables) - 1)){ # Species is not a numeric variable.
   multiple_df[[j]] <- KNN_imputation_numeric(df = multiple_df[[j - 1]], 
                                              outcome = variables[i],  
-                                             variables = colnames(df[, 2:5]),
+                                            
                                              k = c(1, 3, 7, 9))
   j = j + 1
   i = i + 1
