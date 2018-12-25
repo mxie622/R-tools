@@ -72,7 +72,7 @@ df = df_train <- rawdata[splitIndex, ] # df : imputation set; df_train : Raw tra
 df_test  <- rawdata[-splitIndex, ] # Testing set for imputation quality
 
 
-# categorical variables are sex and status
+# categorical variables are 'hatype', 'medication', 'headache', 'sex'
 categorical_variables = c('hatype', 'medication', 'headache', 'sex')
 df[11 : 30, categorical_variables[1]] = NA
 df[401 : 500, categorical_variables[2]] = NA
