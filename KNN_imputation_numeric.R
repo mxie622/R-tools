@@ -19,7 +19,7 @@ KNN_imputation_numeric = function(df, outcome, variables, k){
   df$index_mikexie = 1 : nrow(df)
   if (missing(variables)){
     variables = names(df[!names(df) %in% c(outcome)])
-    variables = variables[-1]
+    variables = variables[-length(variables)]
   }
   
   f <- as.formula(
