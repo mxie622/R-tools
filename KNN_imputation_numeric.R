@@ -7,7 +7,7 @@
 # Start!!!!!!
 
 #------------------------
-
+set.seed(100)
 KNN_imputation_numeric = function(df, outcome, variables, k){
   # df : Raw dataset; data.frame
   # outcome : 'variable' of 'df' to be filled; numeric variable 
@@ -15,11 +15,13 @@ KNN_imputation_numeric = function(df, outcome, variables, k){
   # k : The number of nearest neighbour; a number or a sequence of possible k
   
   # outcome <- 'Sepal.Length' # To fill for example
+  
+  df$index_mikexie = 1 : nrow(df)
   if (missing(variables)){
     variables = names(df[!names(df) %in% c(outcome)])
+    variables = variables[-1]
   }
-  df$index_mikexie = 1 : nrow(df)
-
+  
   f <- as.formula(
     paste(outcome, 
           paste(variables, collapse = " + "), 
@@ -83,8 +85,7 @@ j = 2
 
 for (i in 1 : (length(variables) - 1)){ # Species is not a numeric variable.
   multiple_df[[j]] <- KNN_imputation_numeric(df = multiple_df[[j - 1]], 
-                                             outcome = variables[i],  
-                                            
+                                             outcome = variables[i],                                              
                                              k = c(1, 3, 7, 9))
   j = j + 1
   i = i + 1
@@ -104,9 +105,22 @@ prediction_imputation <- predict(model_imputation, df_test, type = 'class')
 prediction_raw <- predict(model_raw, df_test, type = 'class')
 
 table(prediction_imputation, df_test$Species)
+
+# prediction_imputation setosa versicolor virginica
+# setosa         16          0         0
+# versicolor      0         17         1
+# virginica       0          2        14
+
 table(prediction_raw, df_test$Species)
 
-# Exactly the same
+# prediction_raw setosa versicolor virginica
+# setosa         21          0         0
+# versicolor      0         13         2
+# virginica       0          1        13
+
+
+
+# Prediction even better than the raw data
 # End!!!!
 
 
