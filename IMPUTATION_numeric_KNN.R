@@ -21,7 +21,8 @@ KNN_imputation_numeric = function(df, outcome, variables, k){
     variables = names(df[!names(df) %in% c(outcome)])
     variables = variables[-length(variables)]
   }
-  df = df[c(variables, outcome, 'index_mikexie')]
+  df2 = df[c(variables, outcome, 'index_mikexie')]
+  
   f <- as.formula(
     paste(outcome, 
           paste(variables, collapse = " + "), 
@@ -29,8 +30,8 @@ KNN_imputation_numeric = function(df, outcome, variables, k){
   
   library(caret)
   # Split raw data into 2 sets
-  No_NA_df <- df[complete.cases(df), ] # Complete set with no NA
-  NA_df <- df[!complete.cases(df), ] # Take a subset
+  No_NA_df <- df2[complete.cases(df2), ] # Complete set with no NA
+  NA_df <- df2[!complete.cases(df2), ] # Take a subset
   selecting_k <- train(form = f,
                        method = "knn",
                        data = No_NA_df,
@@ -45,9 +46,10 @@ KNN_imputation_numeric = function(df, outcome, variables, k){
   
   new_df = rbind(NA_df, No_NA_df)
   new_df = new_df[order(new_df$index_mikexie), ]
-  new_df$index_mikexie = NULL
-  new_df
-}
+  df[, outcome] = new_df[, outcome]
+  df$index_mikexie = NULL
+  return(df)
+} 
 
 
 #--------------------------------
