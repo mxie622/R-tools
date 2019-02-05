@@ -21,7 +21,7 @@ KNN_imputation_numeric = function(df, outcome, variables, k){
     variables = names(df[!names(df) %in% c(outcome)])
     variables = variables[-length(variables)]
   }
-  
+  df = df[c(variables, outcome, 'index_mikexie')]
   f <- as.formula(
     paste(outcome, 
           paste(variables, collapse = " + "), 
