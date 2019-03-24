@@ -18,7 +18,7 @@ set.seed(20181227)
 KNN_imputation_multi_NA <- function(data, outcome, k){
 
   # data : Raw dataset; data.frame
-  # outcome : 'variable' of 'data' to be filled; numeric variable 
+  # outcome : 'variable' of 'data' to be filled; factorial variable 
 
   # k : The number of nearest neighbour; a number or a sequence of possible k
   
@@ -69,7 +69,7 @@ KNN_imputation_multi_NA <- function(data, outcome, k){
 # -----------------------------
 # Example: KosteckiDillon data
 # Dataset setting
-
+library(carData)
 data('KosteckiDillon')
 rawdata = KosteckiDillon[sample(nrow(KosteckiDillon)), ] # Shuffle data
 
